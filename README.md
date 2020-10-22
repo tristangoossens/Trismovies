@@ -6,8 +6,8 @@ Trismovies is a cinema site I made for a school project. It consists of a movie 
 
 ### Screenshots
 
-![Home](https://github.com/tristangoossens/sokoban-go/blob/main/assets/readme/homepage.png)
+![Home](https://github.com/tristangoossens/Trismovies/blob/main/assets/readme/homepage.png)
 
 ---
 
-![Movie Info](https://github.com/tristangoossens/sokoban-go/blob/main/assets/readme/movieInfo.png)
+![Movie Info](https://github.com/tristangoossens/Trismovies/blob/main/assets/readme/movieInfo.png)
