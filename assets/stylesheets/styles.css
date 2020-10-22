@@ -1,0 +1,175 @@
+html {
+  scroll-behavior: smooth;
+}
+
+.trismovies-navbar {
+  background-color: #2d2d2d;
+}
+
+.trismovies-navbar a:hover {
+  color: white;
+}
+
+.trismovies-navbar a {
+  color: white;
+}
+
+.trismovies-navbar-toggler .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+}
+
+.trismovies-navbar-toggler.navbar-toggler {
+  border-color: rgb(255, 255, 255);
+}
+
+.trismovies-footer {
+  background-color: #2d2d2d;
+}
+
+.home-header {
+  height: 100vh;
+  background-image: url(../img/background.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  position: relative;
+}
+
+.home-header:after {
+  background-color: rgba(0, 0, 0, 0.6);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  content: "";
+  z-index: 2;
+}
+
+.home-header-content {
+  z-index: 50;
+}
+
+.home-header-arrow {
+  color: #fec728;
+  animation: moveArrow 3s infinite;
+  position: relative;
+}
+
+@keyframes moveArrow {
+  0% {
+    top: 0px;
+  }
+  50% {
+    top: 20px;
+  }
+  100% {
+    top: 0px;
+  }
+}
+
+.home-movie-card {
+  transition: 0.2s;
+}
+
+.home-movie-card:hover {
+  transform: scale(1.1);
+}
+
+.home-movie-card-image {
+  -webkit-box-shadow: 6px 4px 15px 0px rgba(82, 82, 82, 0.76);
+  -moz-box-shadow: 6px 4px 15px 0px rgba(82, 82, 82, 0.76);
+  box-shadow: 6px 4px 15px 0px rgba(82, 82, 82, 0.76);
+  display: block;
+
+  border-radius: 5%;
+
+  min-height: 100%;
+}
+
+.login-card {
+  z-index: 50;
+}
+
+.login-card-button {
+  background-color: #fec728;
+}
+
+.movie-info {
+  background-color: #4a4a4a;
+}
+
+.movie-info-header {
+  background-position: right;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 100vh;
+  position: relative;
+}
+
+.movie-info-header:after {
+  background-color: rgba(0, 0, 0, 0.6);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  content: "";
+  z-index: 2;
+}
+
+.movie-info-header-image {
+  position: relative;
+  border-radius: 3%;
+}
+
+.movie-info-header-details {
+  z-index: 50;
+  position: relative;
+}
+
+.movie-info-header-details-title i {
+  color: #fec728;
+}
+
+.movie-info-header-details-facts {
+  font-size: 1.1rem;
+}
+
+.movie-info-media {
+  background-color: #ffffff;
+}
+
+.movie-info-reservation {
+  background-color: #2d2d2d;
+}
+
+.movie-index-items-card {
+  margin-top: 25px;
+
+  transition: transform 0.2s;
+}
+
+.movie-index-items-card:hover {
+  transform: scale(1.05);
+}
+
+.movie-form-button {
+  background-color: #fec728 !important;
+}
+
+.seatIMG {
+  padding-top: 3px;
+  padding-left: 2px;
+  display: inline-block;
+
+  transition: 0.2s;
+}
+
+.seatIMG:hover {
+  transform: scale(1.2);
+}
+
+.forbidden-403 {
+  height: 100vh;
+}
