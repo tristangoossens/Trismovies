@@ -195,6 +195,7 @@ if (!isset($_SESSION['isLoggedIn'])) {
             foreach ($dates as $date) {
                 $mc->insertMovieDateTime($date, '14:30:00', $latestmovie->id, 1);
             }
+
             $lc->addMovieLanguage($name, $desc, $latestmovie->id, 2);
             echo ("<script>location.href = 'addTranslation.php?movieID=$latestmovie->id';</script>");
         } else {

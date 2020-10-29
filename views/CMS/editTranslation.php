@@ -12,19 +12,23 @@ if (isset($_SESSION['isLoggedIn'])) {
     $lc = new LanguageController();
 
     $id = $_GET['movieID'];
+    $movie = $mc->getMovieByID($id);
+
+    if (isset($_SESSION['LANG'])) {
+        $language = $lc->getMovieTranslation($_SESSION['LANG'], $id);
+    } else {
+        $language = $lc->getMovieTranslation(2, $id);
+    }
 } else {
     Header("Location: 403.php");
 }
-
-$id = $_GET['movieID'];
-$movie = $mc->getMovieByID($id);
 ?>
 
 <!doctype html>
 <html lang="en">
 
 <head>
-    <title>Trismovies | ADD TRANSLATION</title>
+    <title>Trismovies | EDIT TRANSLATION</title>
     <link rel="icon" href="../../assets/img/TM.png">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -78,18 +82,18 @@ $movie = $mc->getMovieByID($id);
 
     <div class="container pt-5">
 
-        <h1 class="font-weight-bold text-uppercase text-center">Please add a translation for <span style="color: #FEC728"><?php echo $movie->title ?></span></h1>
+        <h1 class="font-weight-bold text-uppercase text-center">Edit translations for <span style="color: #FEC728"><?php echo $movie->title ?></span></h1>
         <p class="font-weight-bold text-uppercase text-center">Fill in the form below</p>
 
         <form class="pt-4 pb-5" method="POST" enctype="multipart/form-data" autocomplete="off">
             <div class="form-group">
                 <label for="txtName" class="font-weight-bold text-uppercase">Movie name</label>
-                <input type="text" class="form-control" name="txtName" placeholder="Title">
+                <input type="text" class="form-control" name="txtName" value="<?php echo $language->movietitle ?>" placeholder="Title">
             </div>
 
             <div class="form-group">
                 <label for="txtDescription" class="font-weight-bold text-uppercase">Description</label>
-                <textarea class="form-control" placeholder="Overview" name="txtDescription" rows="3"></textarea>
+                <textarea class="form-control" placeholder="Overview" name="txtDescription" rows="3"><?php echo $language->moviedescription; ?></textarea>
             </div>
 
 
@@ -97,7 +101,14 @@ $movie = $mc->getMovieByID($id);
                 <label for="cbLang" class="font-weight-bold text-uppercase">Language</label>
                 <select class="form-control" name="cbLang">
                     <?php
-                    $lc->getUnusedLanguages($id);
+                    $langs = $lc->getAllLanguages($id);
+                    foreach ($langs as $lang) {
+                        if ($lang->id == $language->languageID) {
+                            echo "<option value='" . $lang->id . "' selected> " . $lang->country  . " - " . $lang->abbreviation .  "</option>";
+                        } else {
+                            echo "<option value='" . $lang->id . "'> " . $lang->country  . " - " . $lang->abbreviation .  "</option>";
+                        }
+                    }
                     ?>
                 </select>
             </div>
@@ -118,7 +129,7 @@ $movie = $mc->getMovieByID($id);
                     </button>
                 </div>
                 <div class="modal-body">
-                    Please fill in all fields before adding a translation
+                    Please fill in all fields before editing a translation
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -137,7 +148,7 @@ $movie = $mc->getMovieByID($id);
 
 
         if (!checkTranslationFormEmpty($formArray)) {
-            $lc->addMovieLanguage($name, $desc, $id, $genre);
+            $lc->editTranslation($name, $desc, $id, $genre);
             echo ("<script>location.href = '../movieInfo.php?movieID=$id';</script>");
         } else {
     ?>

@@ -125,6 +125,7 @@ if (isset($_GET['run']) == true) {
                            <?php
                            if (isset($_SESSION['isLoggedIn'])) { ?>
                               <a class="btn text-white text-dark" style="background-color: #FEC728" href="CMS/editMovie.php?movieID=<?php echo $movie->id; ?>">Edit movie</a>
+                              <a class="btn text-white text-dark" style="background-color: #FEC728" href="CMS/editTranslation.php?movieID=<?php echo $movie->id; ?>">Edit translations</a>
                               <a href="#deletePopup" class="btn btn-danger text-white" data-toggle="modal" data-target="#deletePopup-<?php echo $movie->id ?>">
                                  Delete movie
                               </a>

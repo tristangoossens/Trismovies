@@ -18,6 +18,18 @@ class LanguageController
         }
     }
 
+    public function editTranslation($movieTitle, $movieDescription, $movieID, $languageID)
+    {
+        $mt = $this->getMovieTranslation($languageID, $movieID);
+        $movietranslationid = $mt->id;
+        $query = "UPDATE movie_language SET movietitle='$movieTitle', moviedescription='$movieDescription' WHERE id = $movietranslationid AND movieID = $movieID AND languageID = $languageID";
+
+        $stm = $this->conn->prepare($query);
+        if (!$stm->execute()) {
+            print_r($stm->errorInfo());
+        }
+    }
+
     public function deleteMovieTranslations($movieID)
     {
         $query = "DELETE FROM `movie_language` WHERE `movieid` = $movieID";
