@@ -10,15 +10,23 @@ class MovieController
         $this->conn = $conn;
     }
 
-    public function addMovie($name, $releaseDate, $image, $background, $trailer, $description, $duration, $genreID)
+    public function listMovies()
     {
-        $query = "INSERT into movie (title, release_date, poster, background, trailer_url,  description, duration, genreID)
-        values ('$name', '$releaseDate', '$image', '$background', '$trailer', '$description', '$duration', '$genreID')";
+        $query = "SELECT * FROM movie";
 
         $stm = $this->conn->prepare($query);
         if ($stm->execute()) {
-            echo ("<script>location.href = '../movies.php';</script>");
-        } else {
+            return $stm->fetchAll(PDO::FETCH_OBJ);
+        }
+    }
+
+    public function addMovie($name, $releaseDate, $image, $background, $trailer, $description, $startdate, $enddate, $duration, $genreID)
+    {
+        $query = "INSERT into movie (title, release_date, poster, background, trailer_url,  description, in_theatre_from, in_theatre_until, duration, genreID)
+        values ('$name', '$releaseDate', '$image', '$background', '$trailer', '$description', '$startdate', '$enddate', '$duration', '$genreID')";
+
+        $stm = $this->conn->prepare($query);
+        if (!$stm->execute()) {
             print_r($stm->errorInfo());
         }
     }
@@ -41,47 +49,11 @@ class MovieController
         $query = "DELETE FROM `movie` WHERE `movie`.`id` = $id";
 
         $stm = $this->conn->prepare($query);
-        if ($stm->execute()) {
-            Header("Location: ../movies.php");
-        } else {
+        if (!$stm->execute()) {
             print_r($stm->errorInfo());
         }
     }
 
-    public function listGenres()
-    {
-        $query = "SELECT * FROM `genre`";
-
-        $stm = $this->conn->prepare($query);
-        if ($stm->execute()) {
-            $result = $stm->fetchall(PDO::FETCH_ASSOC);
-            return $result;
-        }
-    }
-
-    public function printGenres()
-    {
-
-        $query = "SELECT * FROM `genre`";
-
-        $stm = $this->conn->prepare($query);
-        if ($stm->execute()) {
-            while ($result = $stm->fetch(PDO::FETCH_ASSOC)) {
-                echo "<option value='" . $result["id"] . "'> " . $result["name"] . "</option>";
-            }
-        }
-    }
-
-    public function getMovieGenre($genreID)
-    {
-        $query = "SELECT * FROM `genre` WHERE id = $genreID";
-
-        $stm = $this->conn->prepare($query);
-        if ($stm->execute()) {
-            $result = $stm->fetch(PDO::FETCH_ASSOC);
-            return $result->name;
-        }
-    }
 
     public function getMovieByID($id)
     {
@@ -117,13 +89,41 @@ class MovieController
         }
     }
 
-    public function listMovies()
+    public function getLatestMovie()
     {
-        $query = "SELECT * FROM movie";
+        $query = "SELECT * FROM movie ORDER BY id DESC LIMIT 1";
+        $stm = $this->conn->prepare($query);
+        if ($stm->execute()) {
+            return $stm->fetch(PDO::FETCH_OBJ);
+        }
+    }
 
+    public function getAllMoviePlaytimes($movieID)
+    {
+        $query = "SELECT * FROM movie_screen WHERE movieID = $movieID";
         $stm = $this->conn->prepare($query);
         if ($stm->execute()) {
             return $stm->fetchAll(PDO::FETCH_OBJ);
+        }
+    }
+
+    public function insertMovieDateTime($date, $starttime, $movieID, $screenID)
+    {
+        $query = "INSERT into movie_screen VALUES(0,'$date', '$starttime', '$movieID', '$screenID')";
+
+        $stm = $this->conn->prepare($query);
+        if (!$stm->execute()) {
+            print_r($stm->errorInfo());
+        }
+    }
+
+    public function deleteMovieBroadcasts($id)
+    {
+        $query = "DELETE FROM `movie_screen` WHERE `movieID` = $id";
+
+        $stm = $this->conn->prepare($query);
+        if (!$stm->execute()) {
+            print_r($stm->errorInfo());
         }
     }
 }

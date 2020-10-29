@@ -99,7 +99,7 @@ session_start();
                      $poster = $vv['poster_path'];
                      $id = $vv['id'];
             ?>
-                     <div class="home-movie-card pb-3 pt-3 pl-3 col-3">
+                     <div class="home-movie-card mb-3 mt-3 pl-3 col-3">
                         <a href="API/APImovieinfo.php?movieID=<?php echo $id; ?>"><img class="home-movie-card-image img-fluid" src="<?php echo "https://image.tmdb.org/t/p/w500$poster" ?>"></a>
                      </div>
 

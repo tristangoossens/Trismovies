@@ -6,8 +6,10 @@ if (isset($_SESSION['isLoggedIn'])) {
         Header("Location: 404.php");
     } else {
         require("../../controllers/movieController.php");
+        require("../../controllers/languageController.php");
 
         $mc = new MovieController();
+        $lc = new LanguageController();
         $id = $_GET['movieID'];
 
         $movie = $mc->getMovieByID($id);
@@ -16,6 +18,9 @@ if (isset($_SESSION['isLoggedIn'])) {
             Header("Location: 404.php");
         } else {
             $mc->deleteMovie($id);
+            $mc->deleteMovieBroadcasts($id);
+            $lc->deleteMovieTranslations($id);
+            Header("Location: ../movies.php");
         }
     }
 } else {

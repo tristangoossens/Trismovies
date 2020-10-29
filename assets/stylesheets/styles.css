@@ -136,6 +136,10 @@ html {
   font-size: 1.1rem;
 }
 
+.movie-info-header-details-cinema {
+  font-size: 1rem;
+}
+
 .movie-info-media {
   background-color: #ffffff;
 }

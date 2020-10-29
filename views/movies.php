@@ -1,5 +1,12 @@
 <?php
 session_start();
+require('../controllers/languageController.php');
+$lc = new LanguageController();
+$langs = $lc->getAllLanguages();
+
+if (isset($_GET['run']) == true) {
+   $lc->setLanguage($_GET['langID']);
+}
 ?>
 
 <!doctype html>
@@ -36,25 +43,36 @@ session_start();
                <a class="nav-item nav-link" href="CMS/addMovie.php">Add movie</a>
             <?php } ?>
          </div>
-         <?php
-         if (isset($_SESSION['isLoggedIn'])) { ?>
-            <div class="navbar-nav right">
+         <div class="navbar-nav right">
+            <div class="dropdown pr-2">
+               <button class="btn btn-secondary dropdown-toggle text-uppercase font-weight-bold" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Language
+               </button>
+               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <?php foreach ($langs as $lang) {
+                  ?>
+                     <a class="dropdown-item text-dark" href="movies.php?run=true&langID=<?php echo $lang->id ?>"><?php echo $lang->country . " - " . $lang->abbreviation ?></a>
+                  <?php
+                  } ?>
+               </div>
+            </div>
+            <?php
+            if (isset($_SESSION['isLoggedIn'])) { ?>
                <span style="color: #fec728!important;" class="navbar-text text-white pr-2">User: <?php echo $_SESSION['user']; ?></span>
                <a class="nav-item nav-link" href="user/logout.php">Logout</a>
-            </div>
-         <?php
-         } else { ?>
-            <div class="navbar-nav right">
-               <a class="nav-item nav-link" href="user/login.php">Login</a>
-            </div>
-         <?php
-         }
-         ?>
 
+            <?php
+            } else { ?>
+               <a class="nav-item nav-link" href="user/login.php">Login</a>
+            <?php
+            }
+            ?>
+         </div>
       </div>
    </nav>
 
    <?php
+
    require('../controllers/movieController.php');
    $mc = new MovieController();
    $movies = $mc->listMovies();
@@ -89,17 +107,27 @@ session_start();
                      </div>
                      <div class="col pl-3 pt-3">
                         <div class="card-block px-2">
-                           <h4 class="card-title"><?php echo $movie->title ?></h4>
-                           <p class="card-text"><?php echo $movie->description ?></p>
-                           <a class="stretched-link btn btn-secondary text-white" href="<?php echo "movieInfo.php?movieID=$movie->id" ?>">View more</a>
+                           <?php if (isset($_SESSION['LANG'])) {
+                              $translatedmovie = $lc->getMovieTranslation($_SESSION['LANG'], $movie->id);
+                           ?>
+                              <h4 class="card-title"><?php echo $translatedmovie->movietitle ?></h4>
+                              <p class="card-text"><?php echo $translatedmovie->moviedescription ?></p>
+                              <a class="stretched-link btn btn-secondary text-white" href="<?php echo "movieInfo.php?movieID=$movie->id" ?>">View more</a>
+                           <?php
+                           } else { ?>
+                              <h4 class="card-title"><?php echo $movie->title ?></h4>
+                              <p class="card-text"><?php echo $movie->description ?></p>
+                              <a class="stretched-link btn btn-secondary text-white" href="<?php echo "movieInfo.php?movieID=$movie->id" ?>">View more</a>
+                           <?php
+                           }
+                           ?>
+
                            <?php
                            if (isset($_SESSION['isLoggedIn'])) { ?>
                               <a class="btn text-white text-dark" style="background-color: #FEC728" href="CMS/editMovie.php?movieID=<?php echo $movie->id; ?>">Edit movie</a>
                               <a href="#deletePopup" class="btn btn-danger text-white" data-toggle="modal" data-target="#deletePopup-<?php echo $movie->id ?>">
                                  Delete movie
                               </a>
-
-
                            <?php
                            } ?>
                         </div>

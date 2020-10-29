@@ -6,6 +6,8 @@ if (isset($_SESSION['isLoggedIn'])) {
         Header("Location: 404.php");
     } else {
         require('../../controllers/movieController.php');
+        require('../../controllers/genreController.php');
+        require('../../scripts/helper_functions.php');
         $id = $_GET['movieID'];
         $c = new MovieController();
 
@@ -35,6 +37,15 @@ if (isset($_SESSION['isLoggedIn'])) {
 </head>
 
 <body>
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+
     <nav class="trismovies-navbar navbar navbar-expand-lg">
         <button class="trismovies-navbar-toggler navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -111,7 +122,8 @@ if (isset($_SESSION['isLoggedIn'])) {
                 <label for="cbGenre" class="font-weight-bold text-uppercase">Genre</label>
                 <select class="form-control" name="cbGenre">
                     <?php
-                    $genres = $c->listGenres();
+                    $gc = new GenreController();
+                    $genres = $gc->listGenres();
                     foreach ($genres as $genre) {
                         if ($genre['id'] == $movie->genreID) {
                             echo "<option value='" . $genre["id"] . "' selected>" . $genre["name"] . "</option>";
@@ -121,6 +133,17 @@ if (isset($_SESSION['isLoggedIn'])) {
                     }
                     ?>
                 </select>
+            </div>
+
+            <div class="row pb-3">
+                <div class="col">
+                    <label for="dpFrom" class="font-weight-bold text-uppercase">Startdate</label>
+                    <input type="date" name="dpFrom" value="<?php echo $movie->in_theatre_from; ?>" class="form-control">
+                </div>
+                <div class="col">
+                    <label for="dpUntil" class="font-weight-bold text-uppercase">Enddate</label>
+                    <input type="date" name="dpUntil" value="<?php echo $movie->in_theatre_until; ?>" class="form-control">
+                </div>
             </div>
 
             <div class="form-group">
@@ -147,6 +170,25 @@ if (isset($_SESSION['isLoggedIn'])) {
         </form>
     </div>
 
+    <div class="modal fade" id="formEmptyPopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Empty fields!!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Please fill in all fields before editing a movie
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <?php
     if (isset($_POST['btnSubmit'])) {
         $name = $_POST['txtName'];
@@ -155,14 +197,28 @@ if (isset($_SESSION['isLoggedIn'])) {
         $genre = $_POST['cbGenre'];
         $release = $_POST['dpDate'];
         $trailer = $_POST['txtTrailer'];
+        $startdate = $_POST['dpFrom'];
+        $enddate = $_POST['dpUntil'];
 
-        $poster = addslashes(file_get_contents($_FILES['posterFile']['tmp_name']));
-        $poster_naam = addslashes($_FILES['posterFile']['name']);
 
-        $background = addslashes(file_get_contents($_FILES['backgroundFile']['tmp_name']));
-        $background_naam = addslashes($_FILES['backgroundFile']['name']);
+        $formArray = array('txtName', 'txtDescription', 'txtDuration', 'cbGenre', 'dpDate', 'txtTrailer', 'dpFrom', 'dpUntil');
 
-        $c->editMovie($id, $name, $release, $poster, $background, $trailer, $desc, $duration, $genre);
+
+        if (!checkFormEmpty($formArray, $_FILES['posterFile'], $_FILES['backgroundFile'])) {
+            $poster = addslashes(file_get_contents($_FILES['posterFile']['tmp_name']));
+            $poster_naam = addslashes($_FILES['posterFile']['name']);
+
+            $background = addslashes(file_get_contents($_FILES['backgroundFile']['tmp_name']));
+            $background_naam = addslashes($_FILES['backgroundFile']['name']);
+
+            $c->editMovie($id, $name, $release, $poster, $background, $trailer, $desc, $duration, $genre);
+        } else {
+    ?>
+            <script>
+                $("#formEmptyPopup").modal('show');
+            </script>
+    <?php
+        }
     }
     ?>
 
@@ -173,14 +229,6 @@ if (isset($_SESSION['isLoggedIn'])) {
             <span style="color: #FEC728">Tris</span>movies
         </div>
     </footer>
-
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
-    </script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
-    </script>
-
 
     <script>
         function displayPoster(input) {
